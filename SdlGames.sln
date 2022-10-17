@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SdlGames.Engine", "SdlGames.Engine\SdlGames.Engine.csproj", "{51ED559C-4378-4675-945F-299C747A90A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SdlGames.Sandbox", "SdlGames.Sandbox\SdlGames.Sandbox.csproj", "{94650126-C009-4D63-A961-A9494C198F26}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{51ED559C-4378-4675-945F-299C747A90A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51ED559C-4378-4675-945F-299C747A90A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51ED559C-4378-4675-945F-299C747A90A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51ED559C-4378-4675-945F-299C747A90A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94650126-C009-4D63-A961-A9494C198F26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94650126-C009-4D63-A961-A9494C198F26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94650126-C009-4D63-A961-A9494C198F26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94650126-C009-4D63-A961-A9494C198F26}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
