@@ -1,6 +1,15 @@
+using SdlGames.Engine.ECS;
+
 namespace SdlGames.Sandbox;
 
-public class TransformSystem
+public struct TransformSystemComponents
 {
-    
+    public TransformComponent Transform;
+}
+
+public class TransformSystem : System<TransformSystemComponents>
+{
+    protected override void OnUpdate(IEnumerable<TransformSystemComponents> components)
+    {
+    }
 }
