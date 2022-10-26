@@ -11,4 +11,9 @@
       <ProjectReference Include="..\SdlGames.Engine\SdlGames.Engine.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Assets\bd.png" />
+      <EmbeddedResource Include="Assets\BoulderDashSprites.png" />
+    </ItemGroup>
+
 </Project>

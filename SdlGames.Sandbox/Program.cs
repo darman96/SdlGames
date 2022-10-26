@@ -1,17 +1,14 @@
 using SdlGames.Engine;
-using SdlGames.Engine.ECS;
 
 namespace SdlGames.Sandbox;
 
 public class TestGame : Game
 {
-    public TestGame(string title, int width, int height) 
+    public TestGame(string title, int width, int height)
         : base(title, width, height) { }
 
-    public override void OnUpdate()
+    public override void Initialize()
     {
-        this.window.Clear(Color.Red());
-        this.window.Present();
     }
 }
 

@@ -1,4 +1,7 @@
+using SdlGames.Engine.ECS;
+using SdlGames.Engine.ECS.Systems;
 using SdlGames.Engine.Event;
+using SdlGames.Engine.Extensions;
 using SdlGames.Engine.Internal;
 using SdlGames.Engine.Internal.Interfaces;
 
@@ -7,17 +10,19 @@ namespace SdlGames.Engine;
 public abstract class Game
 {
     private bool running = true;
+    private GameManager gameManager;
     
-    protected readonly IWindow window;
-
     protected Game(string title, int width, int height)
     {
-        this.window = new SdlContext(title, width, height);
+        GameManager.Initialize(title, width, height);
+        this.gameManager = GameManager.Instance;
     }
 
     public void Run()
     {
-        while (running)
+        this.Initialize();
+        var window = this.gameManager.Window;
+        while (this.running)
         {
             window.PollEvents(type =>
             {
@@ -32,9 +37,12 @@ public abstract class Game
                         throw new ArgumentOutOfRangeException(nameof(type), type, null);
                 }
             });
-            this.OnUpdate();
+            window.Clear(Color.Black());
+            this.gameManager.Update();
+            
+            window.Present();
         }
     }
 
-    public abstract void OnUpdate();
+    public abstract void Initialize();
 }

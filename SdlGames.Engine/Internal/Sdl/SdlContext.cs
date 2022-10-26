@@ -1,11 +1,15 @@
+using System.Numerics;
+using System.Runtime.InteropServices;
+using SDL2;
 using static SDL2.SDL;
 using SdlGames.Engine.Event;
+using SdlGames.Engine.Graphics;
 using SdlGames.Engine.Internal.Interfaces;
 using SdlGames.Engine.Math;
 
 namespace SdlGames.Engine.Internal;
 
-internal class SdlContext : IWindow
+internal class SdlContext : IWindow, IRenderer
 {
     public IntPtr WindowHandle { get; private set; }
     public IntPtr RendererHandle { get; private set; }
@@ -41,10 +45,10 @@ internal class SdlContext : IWindow
         SDL_SetWindowSize(this.WindowHandle, width, height);
     }
 
-    public Vector2I GetSize()
+    public Vector2 GetSize()
     {
         SDL_GetWindowSize(this.WindowHandle, out var width, out var height);
-        return new Vector2I(width, height);
+        return new Vector2(width, height);
     }
 
     public void SetPosition(int x, int y)
@@ -52,10 +56,10 @@ internal class SdlContext : IWindow
         SDL_SetWindowPosition(this.WindowHandle, x ,y);
     }
 
-    public Vector2I GetPosition()
+    public Vector2 GetPosition()
     {
         SDL_GetWindowPosition(this.WindowHandle, out var x, out var y);
-        return new Vector2I(x, y);
+        return new Vector2(x, y);
     }
 
     public void SetVsync(bool enabled)
@@ -160,5 +164,28 @@ internal class SdlContext : IWindow
     public void Present()
     {
         SDL_RenderPresent(this.RendererHandle);
+    }
+
+
+    Texture IRenderer.CreateTexture(IntPtr bufferHandle, int bufferSize)
+    {
+        var rwOps = SDL_RWFromConstMem(bufferHandle, bufferSize);
+        var textureHandle = SDL_image.IMG_LoadTexture_RW(this.RendererHandle, rwOps, 0);
+        SDL_QueryTexture(textureHandle, out _, out _, out var width, out var height);
+        
+        return new Texture(textureHandle, new Vector2(width, height));
+    }
+
+    public void DrawTexture(Vector2 position, Texture texture)
+    {
+        var rect = new SDL_FRect
+        {
+            x = position.X,
+            y = position.Y,
+            w = texture.Size.X,
+            h = texture.Size.Y
+        };
+        
+        SDL_RenderCopyF(this.RendererHandle, texture.Handle, IntPtr.Zero, ref rect);
     }
 }
