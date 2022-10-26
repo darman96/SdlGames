@@ -1,4 +1,6 @@
-namespace SdlGames.Engine.ECS;
+using SdlGames.Engine.ECS.Component;
+
+namespace SdlGames.Engine.ECS.Entity;
 
 public struct Entity
 {
@@ -12,12 +14,12 @@ public struct Entity
         this.componentStore = componentStore;
     }
     
-    public bool HasComponent<T>() where T : struct
+    public bool HasComponent<T>() where T : notnull
         => this.componentStore.HasComponent<T>(this.Id);
     
-    public T GetComponent<T>() where T : struct
+    public T GetComponent<T>() where T : notnull
         => this.componentStore.GetComponent<T>(this.Id);
     
-    public void AddComponent<T>(T component) where T : struct
+    public void AddComponent<T>(T component) where T : notnull
         => this.componentStore.RegisterComponent(this.Id, component);
 }

@@ -1,7 +1,7 @@
-using SdlGames.Engine.ECS.Components;
+using SdlGames.Engine.ECS.Component;
 using SdlGames.Engine.Internal.Interfaces;
 
-namespace SdlGames.Engine.ECS.Systems;
+namespace SdlGames.Engine.ECS.System;
 
 public struct SpriteSystemComponents
 {

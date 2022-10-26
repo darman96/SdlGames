@@ -1,8 +1,7 @@
 using System.Collections.Immutable;
-using System.Reflection;
 using SdlGames.Engine.Extensions;
 
-namespace SdlGames.Engine.ECS;
+namespace SdlGames.Engine.ECS.Component;
 
 internal class ComponentStore
 {
@@ -13,8 +12,8 @@ internal class ComponentStore
 
         public ComponentInstance(Guid entityId, object component)
         {
-            EntityId = entityId;
-            Component = component;
+            this.EntityId = entityId;
+            this.Component = component;
         }
     }
 
@@ -25,8 +24,8 @@ internal class ComponentStore
 
         public ComponentGroup(Guid entityId, HashSet<object> components)
         {
-            EntityId = entityId;
-            Components = components;
+            this.EntityId = entityId;
+            this.Components = components;
         }
     }
 
@@ -79,7 +78,7 @@ internal class ComponentStore
     {
         componentTypes.ForEach(t =>
         {
-            if (!store.ContainsKey(t))
+            if (!this.store.ContainsKey(t))
                 throw new KeyNotFoundException($"Component type not found: {t}");
         });
 

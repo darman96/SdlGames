@@ -1,3 +1,4 @@
+using SdlGames.Engine.ECS.Component;
 using SdlGames.Engine.Extensions;
 
 namespace SdlGames.Engine.ECS.System;
@@ -36,24 +37,24 @@ public class SystemManager
             UpdateMethod = updateMethod
         };
 
-        systems.Add(system);
-        systemInfos[systemType] = systemInfo;
+        this.systems.Add(system);
+        this.systemInfos[systemType] = systemInfo;
     }
 
     public void UpdateSystems()
     {
-        systems.ForEach(updateSystem);
+        this.systems.ForEach(this.updateSystem);
     }
 
     private void updateSystem(object system)
     {
         var systemType = system.GetType();
-        var systemInfo = systemInfos[systemType];
+        var systemInfo = this.systemInfos[systemType];
         var componentTypes = systemInfo.RequiredComponents
             .Select(x => x.Type)
             .ToArray();
 
-        var componentGroups = componentStore
+        var componentGroups = this.componentStore
             .GetComponentGroups(componentTypes);
 
         foreach (var componentGroup in componentGroups)

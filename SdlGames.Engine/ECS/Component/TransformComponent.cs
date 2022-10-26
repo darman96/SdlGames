@@ -1,8 +1,8 @@
 using System.Numerics;
 
-namespace SdlGames.Engine.ECS.Components;
+namespace SdlGames.Engine.ECS.Component;
 
-public struct TransformComponent
+public class TransformComponent
 {
     public Vector2 Position { get; set; }
     public Vector2 Scale { get; set; }

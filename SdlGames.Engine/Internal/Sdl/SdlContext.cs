@@ -1,13 +1,12 @@
 using System.Numerics;
-using System.Runtime.InteropServices;
 using SDL2;
-using static SDL2.SDL;
 using SdlGames.Engine.Event;
 using SdlGames.Engine.Graphics;
 using SdlGames.Engine.Internal.Interfaces;
 using SdlGames.Engine.Math;
+using static SDL2.SDL;
 
-namespace SdlGames.Engine.Internal;
+namespace SdlGames.Engine.Internal.Sdl;
 
 internal class SdlContext : IWindow, IRenderer
 {
@@ -16,7 +15,7 @@ internal class SdlContext : IWindow, IRenderer
 
     public SdlContext(string title, int width, int height)
     {
-        WindowHandle = SDL_CreateWindow(
+        this.WindowHandle = SDL_CreateWindow(
             title,
             SDL_WINDOWPOS_UNDEFINED,
             SDL_WINDOWPOS_UNDEFINED,
@@ -24,8 +23,8 @@ internal class SdlContext : IWindow, IRenderer
             height,
             SDL_WindowFlags.SDL_WINDOW_VULKAN);
 
-        RendererHandle = SDL_CreateRenderer(
-            WindowHandle,
+        this.RendererHandle = SDL_CreateRenderer(
+            this.WindowHandle,
             0,
             SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
     }

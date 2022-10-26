@@ -2,9 +2,9 @@ using System.Numerics;
 using SdlGames.Engine.Graphics;
 using SdlGames.Engine.Math;
 
-namespace SdlGames.Engine.ECS.Components;
+namespace SdlGames.Engine.ECS.Component;
 
-public struct SpriteComponent
+public class SpriteComponent
 {
     public Rect SourceRect { get; set; }
     public Texture Texture { get; set; }

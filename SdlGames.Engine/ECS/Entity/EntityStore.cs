@@ -1,6 +1,7 @@
+using SdlGames.Engine.ECS.Component;
 using SdlGames.Engine.Extensions;
 
-namespace SdlGames.Engine.ECS;
+namespace SdlGames.Engine.ECS.Entity;
 
 public class EntityStore
 {
