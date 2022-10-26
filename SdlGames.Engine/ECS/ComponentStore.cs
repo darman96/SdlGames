@@ -1,73 +1,95 @@
 using System.Collections.Immutable;
 using System.Reflection;
+using SdlGames.Engine.Extensions;
 
 namespace SdlGames.Engine.ECS;
 
 internal class ComponentStore
 {
-    private readonly Dictionary<Type, HashSet<(Guid, object)>> store = new();
-    
+    public struct ComponentInstance
+    {
+        public Guid EntityId;
+        public object Component;
+
+        public ComponentInstance(Guid entityId, object component)
+        {
+            EntityId = entityId;
+            Component = component;
+        }
+    }
+
+    public struct ComponentGroup
+    {
+        public Guid EntityId;
+        public HashSet<object> Components;
+
+        public ComponentGroup(Guid entityId, HashSet<object> components)
+        {
+            EntityId = entityId;
+            Components = components;
+        }
+    }
+
+    private readonly Dictionary<Type, HashSet<ComponentInstance>> store = new();
+
     public void RegisterComponent(Guid entityId, object component)
     {
         var componentType = component.GetType();
         if (!this.store.ContainsKey(componentType))
-            this.store[componentType] = new HashSet<(Guid, object)>();
-        
-        this.store[componentType].Add((entityId, component));
+            this.store[componentType] = new HashSet<ComponentInstance>();
+
+        this.store[componentType].Add(new ComponentInstance(entityId, component));
     }
-    
-    public ImmutableHashSet<(Guid, TComponent)> GetComponents<TComponent>()
+
+    public ImmutableHashSet<ComponentInstance> GetComponents<TComponent>()
     {
         var componentType = typeof(TComponent);
         if (!this.store.ContainsKey(componentType))
-            return ImmutableHashSet<(Guid, TComponent)>.Empty;
-        
+            return ImmutableHashSet<ComponentInstance>.Empty;
+
         return this.store[componentType]
-            .Cast<(Guid, TComponent)>()
             .ToImmutableHashSet();
     }
 
-    public ImmutableHashSet<(Guid, TComponentCollection)> GetComponentCollections<TComponentCollection>()
-        where TComponentCollection : struct
+    public ImmutableHashSet<ComponentGroup> GetComponentGroups(Type[] componentTypes)
     {
-        var componentTypes = typeof(TComponentCollection)
-            .GetFields(BindingFlags.Instance | BindingFlags.Public)
-            .Select(info => this.store.ContainsKey(info.FieldType) 
-                ? info.FieldType
-                : throw new KeyNotFoundException($"Component type not found: {info.FieldType}"));
-        
-        var componentCollections = new HashSet<(Guid, TComponentCollection)>();
-        
+        componentTypes.ForEach(t =>
+        {
+            if (!store.ContainsKey(t))
+                throw new KeyNotFoundException($"Component type not found: {t}");
+        });
+
+        var componentGroups = new HashSet<ComponentGroup>();
+
         foreach (var componentType in componentTypes)
         {
-            foreach (var (entityId, component) in this.store[componentType])
+            foreach (var instance in this.store[componentType])
             {
-                var componentCollection = componentCollections.FirstOrDefault(x => x.Item1 == entityId);
-                if (componentCollection.Item1 == Guid.Empty)
+                var componentGroup = componentGroups
+                    .FirstOrDefault(x => x.EntityId == instance.EntityId);
+                if (componentGroup.EntityId == Guid.Empty)
                 {
-                    componentCollection.Item1 = entityId;
-                    componentCollection.Item2 = new TComponentCollection();
-                    componentCollections.Add(componentCollection);
+                    componentGroup.EntityId = instance.EntityId;
+                    componentGroup.Components = new HashSet<object>();
+                    componentGroups.Add(componentGroup);
                 }
-                
-                typeof(TComponentCollection)
-                    .GetField(component.GetType().Name)!
-                    .SetValue(componentCollection.Item2, component);
+
+                componentGroup.Components.Add(instance.Component);
             }
         }
 
-        return componentCollections.ToImmutableHashSet();
+        return componentGroups
+            .ToImmutableHashSet();
     }
 
     public void RemoveComponent<TComponent>(Guid entityId)
         => this.RemoveComponent(entityId, typeof(TComponent));
-    
+
     public void RemoveComponent(Guid entityId, Type componentType)
     {
         if (!this.store.ContainsKey(componentType))
             throw new KeyNotFoundException($"Component type not found: {componentType}");
-        
-        this.store[componentType].RemoveWhere(x => x.Item1 == entityId);
+
+        this.store[componentType].RemoveWhere(x => x.EntityId == entityId);
     }
-    
 }

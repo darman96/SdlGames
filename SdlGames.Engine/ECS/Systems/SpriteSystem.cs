@@ -17,4 +17,9 @@ public class SpriteSystem
     {
         this.renderer = renderer;
     }
+    
+    public void Update(TransformComponent transformComponent, SpriteComponent spriteComponent)
+    {
+        renderer.DrawTexture(transformComponent.Position, spriteComponent.Texture);
+    }
 }

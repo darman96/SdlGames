@@ -19,20 +19,21 @@ public class GameManager
         }
     }
     private static GameManager? instance;
-    
 
-    public IWindow Window { get; private set; }
-    public IRenderer Renderer { get; private set; }
-    public ResourceManager ResourceManager { get; private set; }
 
+    public IWindow Window => context;
+    public IRenderer Renderer => context;
+    public ResourceManager ResourceManager => resourceManager;
+
+    private readonly SdlContext context;
+    private readonly ResourceManager resourceManager = new();
     private readonly ComponentStore componentStore = new();
+    private readonly EntityStore entityStore;
     
     private GameManager(string title, int width, int height)
     {
-        var context = new SdlContext(title, width, height);
-        this.Window = context;
-        this.Renderer = context;
-        this.ResourceManager = new ResourceManager();
+        this.context = new SdlContext(title, width, height);
+        this.entityStore = new EntityStore(componentStore);
     }
     
     public static void Initialize(string title, int width, int height)
@@ -40,8 +41,21 @@ public class GameManager
         instance = new GameManager(title, width, height);
     }
     
+    public Entity CreateEntity(params object[] components)
+    {
+        return entityStore.CreateEntity(components);
+    }
+    
+    public Entity? GetEntity(Guid id)
+    {
+        return entityStore.GetEntity(id);
+    }
+
     internal void Update()
     {
+        var updateMethod = typeof(SpriteSystem)
+            .GetMethod("Update");
+        var parameters = updateMethod.GetParameters();
     }
 
 }

@@ -1,6 +1,5 @@
 using System.Numerics;
 using SdlGames.Engine.Event;
-using SdlGames.Engine.Math;
 
 namespace SdlGames.Engine.Internal.Interfaces;
 
