@@ -1,9 +1,4 @@
-using SdlGames.Engine.ECS;
-using SdlGames.Engine.ECS.Systems;
 using SdlGames.Engine.Event;
-using SdlGames.Engine.Extensions;
-using SdlGames.Engine.Internal;
-using SdlGames.Engine.Internal.Interfaces;
 
 namespace SdlGames.Engine;
 

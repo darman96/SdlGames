@@ -20,6 +20,9 @@ public class SpriteSystem
     
     public void Update(TransformComponent transformComponent, SpriteComponent spriteComponent)
     {
-        renderer.DrawTexture(transformComponent.Position, spriteComponent.Texture);
+        this.renderer.DrawSprite(
+            transformComponent.Position,
+            spriteComponent.Texture,
+            spriteComponent.SourceRect);
     }
 }

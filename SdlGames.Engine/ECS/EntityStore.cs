@@ -14,18 +14,15 @@ public class EntityStore
     
     public Entity CreateEntity(params object[] components)
     {
-        var entity = new Entity(Guid.NewGuid());
+        var entity = new Entity(Guid.NewGuid(), this.componentStore);
         this.entities.Add(entity);
         
         components.ForEach(c 
-            => componentStore.RegisterComponent(entity.Id, c));
+            => this.componentStore.RegisterComponent(entity.Id, c));
         
         return entity;
     }
 
     public Entity? GetEntity(Guid id)
-    {
-        return this.entities
-            .FirstOrDefault(e => e.Id == id);
-    }
+        => this.entities.FirstOrDefault(e => e.Id == id);
 }

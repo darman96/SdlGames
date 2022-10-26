@@ -41,6 +41,30 @@ internal class ComponentStore
         this.store[componentType].Add(new ComponentInstance(entityId, component));
     }
 
+    public bool HasComponent<T>(Guid entityId)
+    {
+        var componentType = typeof(T);
+        if (!this.store.ContainsKey(componentType))
+            throw new KeyNotFoundException($"Component type not found: {componentType}");
+
+        return this.store[componentType]
+            .Any(x => x.EntityId == entityId);
+    }
+
+    public T GetComponent<T>(Guid entityId)
+    {
+        var componentType = typeof(T);
+        if (!this.store.ContainsKey(componentType))
+            throw new KeyNotFoundException($"Component type not found: {componentType}");
+        
+        if (!this.store[componentType].Any(x => x.EntityId == entityId))
+            throw new KeyNotFoundException($"Component {componentType} not found for entity: {entityId}");
+
+        return (T)this.store[componentType]
+            .Single(x => x.EntityId == entityId)
+            .Component;
+    }
+    
     public ImmutableHashSet<ComponentInstance> GetComponents<TComponent>()
     {
         var componentType = typeof(TComponent);

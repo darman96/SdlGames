@@ -188,4 +188,25 @@ internal class SdlContext : IWindow, IRenderer
         
         SDL_RenderCopyF(this.RendererHandle, texture.Handle, IntPtr.Zero, ref rect);
     }
+
+    public void DrawSprite(Vector2 position, Texture texture, Rect sourceRect)
+    {
+        var rect = new SDL_FRect
+        {
+            x = position.X,
+            y = position.Y,
+            w = sourceRect.Width,
+            h = sourceRect.Height
+        };
+        
+        var sdlSourceRect = new SDL_Rect
+        {
+            x = (int)sourceRect.X,
+            y = (int)sourceRect.Y,
+            w = (int)sourceRect.Width,
+            h = (int)sourceRect.Height
+        };
+        
+        SDL_RenderCopyF(this.RendererHandle, texture.Handle, ref sdlSourceRect, ref rect);
+    }
 }
