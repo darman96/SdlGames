@@ -64,6 +64,14 @@ internal class ComponentStore
             .Component;
     }
     
+    public ImmutableHashSet<ComponentInstance> GetComponents(Guid entityId)
+    {
+        return this.store
+            .SelectMany(x => x.Value)
+            .Where(x => x.EntityId == entityId)
+            .ToImmutableHashSet();
+    }
+    
     public ImmutableHashSet<ComponentInstance> GetComponents<TComponent>()
     {
         var componentType = typeof(TComponent);
@@ -102,6 +110,7 @@ internal class ComponentStore
         }
 
         return componentGroups
+            .Where(g => g.Components.Count == componentTypes.Length)
             .ToImmutableHashSet();
     }
 

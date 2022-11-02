@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using SdlGames.Engine.ECS.Component;
 using SdlGames.Engine.Extensions;
 
@@ -26,4 +27,7 @@ public class EntityStore
 
     public Entity? GetEntity(Guid id)
         => this.entities.FirstOrDefault(e => e.Id == id);
+    
+    public ImmutableHashSet<Entity> GetEntities()
+        => this.entities.ToImmutableHashSet();
 }

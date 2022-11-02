@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Numerics;
 using SDL2;
 using SdlGames.Engine.Event;
@@ -175,7 +176,7 @@ internal class SdlContext : IWindow, IRenderer
         return new Texture(textureHandle, new Vector2(width, height));
     }
 
-    public void DrawTexture(Vector2 position, Texture texture)
+    public void DrawTexture(PointF position, Texture texture)
     {
         var rect = new SDL_FRect
         {
@@ -188,7 +189,7 @@ internal class SdlContext : IWindow, IRenderer
         SDL_RenderCopyF(this.RendererHandle, texture.Handle, IntPtr.Zero, ref rect);
     }
 
-    public void DrawSprite(Vector2 position, Texture texture, Rect sourceRect)
+    public void DrawSprite(PointF position, Texture texture, RectangleF sourceRect)
     {
         var rect = new SDL_FRect
         {

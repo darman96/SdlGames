@@ -1,6 +1,7 @@
 using SdlGames.Engine.ECS.Component;
 using SdlGames.Engine.ECS.Entity;
 using SdlGames.Engine.ECS.System;
+using SdlGames.Engine.Extensions;
 using SdlGames.Engine.Internal.Interfaces;
 using SdlGames.Engine.Internal.Sdl;
 
@@ -40,6 +41,7 @@ public class GameManager
         this.entityStore = new EntityStore(this.componentStore);
         this.systemManager = new SystemManager(this.componentStore);
         this.systemManager.AddSystem(new SpriteSystem(this.Renderer));
+        this.systemManager.AddSystem(new SpriteAnimationSystem(this.Renderer));
         this.gameTimeManager = new GameTimeManager();
     }
     
@@ -67,4 +69,16 @@ public class GameManager
         this.systemManager.UpdateSystems();
     }
 
+    public void PrintEntitiesWithComponents()
+    {
+        this.entityStore
+            .GetEntities()
+            .ForEach(entity =>
+            {
+                var components = this.componentStore.GetComponents(entity.Id);
+                
+                Console.WriteLine(entity.Id);
+                components.ForEach(c => Console.WriteLine($"\t{c.Component.GetType().Name}"));
+            });
+    }
 }

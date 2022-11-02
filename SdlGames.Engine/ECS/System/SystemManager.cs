@@ -54,25 +54,29 @@ public class SystemManager
             .Select(x => x.Type)
             .ToArray();
 
-        var componentGroups = this.componentStore
-            .GetComponentGroups(componentTypes);
-
-        foreach (var componentGroup in componentGroups)
+        try
         {
-            var requiredComponents = componentGroup.Components
-                .Join(
-                    systemInfo.RequiredComponents,
-                    component => component.GetType(),
-                    info => info.Type,
-                    (component, info) 
-                        => new SystemInfo.RequiredComponent(info, component))
-                .OrderBy(x => x.Info.ParameterIndex);
+            var componentGroups = this.componentStore
+                .GetComponentGroups(componentTypes);
 
-            systemInfo.UpdateMethod.Invoke(
-                system,
-                requiredComponents
-                    .Select(r => r.Instance)
-                    .ToArray());
+            foreach (var componentGroup in componentGroups)
+            {
+                var requiredComponents = componentGroup.Components
+                    .Join(
+                        systemInfo.RequiredComponents,
+                        component => component.GetType(),
+                        info => info.Type,
+                        (component, info) 
+                            => new SystemInfo.RequiredComponent(info, component))
+                    .OrderBy(x => x.Info.ParameterIndex);
+
+                systemInfo.UpdateMethod.Invoke(
+                    system,
+                    requiredComponents
+                        .Select(r => r.Instance)
+                        .ToArray());
+            }
         }
+        catch (KeyNotFoundException _) { }
     }
 }
