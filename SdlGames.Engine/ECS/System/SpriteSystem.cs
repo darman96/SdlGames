@@ -1,5 +1,5 @@
 using SdlGames.Engine.ECS.Component;
-using SdlGames.Engine.Internal.Interfaces;
+using SdlGames.Engine.Interfaces;
 
 namespace SdlGames.Engine.ECS.System;
 
@@ -16,7 +16,6 @@ public class SpriteSystem
     {
         this.renderer.DrawSprite(
             transformComponent.Position,
-            spriteComponent.Sprite.Texture,
-            spriteComponent.Sprite.SourceRect);
+            spriteComponent.Sprite);
     }
 }

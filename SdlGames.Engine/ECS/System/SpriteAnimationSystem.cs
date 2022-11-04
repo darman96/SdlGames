@@ -1,5 +1,5 @@
 using SdlGames.Engine.ECS.Component;
-using SdlGames.Engine.Internal.Interfaces;
+using SdlGames.Engine.Interfaces;
 
 namespace SdlGames.Engine.ECS.System;
 
@@ -25,9 +25,8 @@ public class SpriteAnimationSystem
         var sprite = spriteAnimationComponent.Frames[spriteAnimationComponent.CurrentFrame];
         this.renderer.DrawSprite(
             transformComponent.Position,
-            sprite.Texture,
-            sprite.SourceRect);
+            sprite);
         
-        spriteAnimationComponent.CurrentFrameTime += GameManager.DeltaTime;
+        // spriteAnimationComponent.CurrentFrameTime += GameManager.DeltaTime;
     }
 }

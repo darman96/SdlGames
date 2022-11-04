@@ -1,88 +1,84 @@
-using System.Drawing;
-using System.Numerics;
-using SDL2;
-using SdlGames.Engine.Event;
-using SdlGames.Engine.Graphics;
-using SdlGames.Engine.Internal.Interfaces;
-using SdlGames.Engine.Math;
 using static SDL2.SDL;
+using System.Numerics;
+using SdlGames.Engine.Event;
+using SdlGames.Engine.Interfaces;
 
 namespace SdlGames.Engine.Internal.Sdl;
 
-internal class SdlContext : IWindow, IRenderer
+internal class SdlWindow : IWindow
 {
-    public IntPtr WindowHandle { get; private set; }
-    public IntPtr RendererHandle { get; private set; }
+    public IntPtr Handle => this.windowHandle;
+    
+    private readonly IntPtr windowHandle;
 
-    public SdlContext(string title, int width, int height)
+    public SdlWindow(string title, int width, int height)
     {
-        this.WindowHandle = SDL_CreateWindow(
+        this.windowHandle = SDL_CreateWindow(
             title,
-            SDL_WINDOWPOS_UNDEFINED,
-            SDL_WINDOWPOS_UNDEFINED,
-            width,
-            height,
+            SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+            width, height,
             SDL_WindowFlags.SDL_WINDOW_VULKAN);
-
-        this.RendererHandle = SDL_CreateRenderer(
-            this.WindowHandle,
-            0,
-            SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
+        
+        if (this.windowHandle == IntPtr.Zero)
+            throw new Exception("Failed to create window");
     }
 
     public void SetTitle(string title)
     {
-        SDL_SetWindowTitle(this.WindowHandle, title);
+        SDL_SetWindowTitle(this.windowHandle, title);
     }
 
     public string GetTitle()
     {
-        return SDL_GetWindowTitle(this.WindowHandle);
+        return SDL_GetWindowTitle(this.windowHandle);
     }
 
     public void SetSize(int width, int height)
     {
-        SDL_SetWindowSize(this.WindowHandle, width, height);
+        SDL_SetWindowSize(this.windowHandle, width, height);
     }
 
     public Vector2 GetSize()
     {
-        SDL_GetWindowSize(this.WindowHandle, out var width, out var height);
+        SDL_GetWindowSize(this.windowHandle, out var width, out var height);
         return new Vector2(width, height);
     }
 
     public void SetPosition(int x, int y)
     {
-        SDL_SetWindowPosition(this.WindowHandle, x ,y);
+        SDL_SetWindowPosition(this.windowHandle, x, y);
     }
 
     public Vector2 GetPosition()
     {
-        SDL_GetWindowPosition(this.WindowHandle, out var x, out var y);
+        SDL_GetWindowPosition(this.windowHandle, out var x, out var y);
         return new Vector2(x, y);
     }
 
     public void SetVsync(bool enabled)
     {
-        SDL_RenderSetVSync(this.RendererHandle, enabled ? 1 : 0);
+        SDL_GL_SetSwapInterval(enabled ? 1 : 0);
     }
 
     public bool GetVsync()
     {
-        return SDL_GetHintBoolean(SDL_HINT_RENDER_VSYNC, SDL_bool.SDL_FALSE) == SDL_bool.SDL_TRUE;
+        return SDL_GL_GetSwapInterval() == 1;
     }
 
     public void SetFullscreen(bool enabled)
     {
-        throw new NotImplementedException();
+        SDL_SetWindowFullscreen(this.windowHandle, enabled 
+            ? SDL_GetWindowFlags(this.windowHandle) & (uint)SDL_WindowFlags.SDL_WINDOW_FULLSCREEN 
+            : SDL_GetWindowFlags(this.windowHandle) & ~(uint)SDL_WindowFlags.SDL_WINDOW_FULLSCREEN);
     }
 
     public bool GetFullscreen()
     {
-        throw new NotImplementedException();
+        return ((SDL_WindowFlags)SDL_GetWindowFlags(this.windowHandle))
+            .HasFlag(SDL_WindowFlags.SDL_WINDOW_FULLSCREEN);
     }
 
-    public void PollEvents(IWindow.WindowEventHandler handler)
+    void IWindow.PollEvents(IWindow.WindowEventHandler handler)
     {
         while (SDL_PollEvent(out var sdlEvent) != 0)
         {
@@ -153,60 +149,5 @@ internal class SdlContext : IWindow, IRenderer
                     throw new ArgumentOutOfRangeException();
             }
         }
-    }
-
-    public void Clear(Color color)
-    {
-        SDL_SetRenderDrawColor(this.RendererHandle, (byte)color.R, (byte)color.G, (byte)color.B, (byte)color.A);
-        SDL_RenderClear(this.RendererHandle);
-    }
-
-    public void Present()
-    {
-        SDL_RenderPresent(this.RendererHandle);
-    }
-
-
-    Texture IRenderer.CreateTexture(IntPtr bufferHandle, int bufferSize)
-    {
-        var rwOps = SDL_RWFromConstMem(bufferHandle, bufferSize);
-        var textureHandle = SDL_image.IMG_LoadTexture_RW(this.RendererHandle, rwOps, 0);
-        SDL_QueryTexture(textureHandle, out _, out _, out var width, out var height);
-        
-        return new Texture(textureHandle, new Vector2(width, height));
-    }
-
-    public void DrawTexture(PointF position, Texture texture)
-    {
-        var rect = new SDL_FRect
-        {
-            x = position.X,
-            y = position.Y,
-            w = texture.Size.X,
-            h = texture.Size.Y
-        };
-        
-        SDL_RenderCopyF(this.RendererHandle, texture.Handle, IntPtr.Zero, ref rect);
-    }
-
-    public void DrawSprite(PointF position, Texture texture, RectangleF sourceRect)
-    {
-        var rect = new SDL_FRect
-        {
-            x = position.X,
-            y = position.Y,
-            w = sourceRect.Width,
-            h = sourceRect.Height
-        };
-        
-        var sdlSourceRect = new SDL_Rect
-        {
-            x = (int)sourceRect.X,
-            y = (int)sourceRect.Y,
-            w = (int)sourceRect.Width,
-            h = (int)sourceRect.Height
-        };
-        
-        SDL_RenderCopyF(this.RendererHandle, texture.Handle, ref sdlSourceRect, ref rect);
     }
 }

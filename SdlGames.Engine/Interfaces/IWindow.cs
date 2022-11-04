@@ -1,11 +1,11 @@
 using System.Numerics;
 using SdlGames.Engine.Event;
 
-namespace SdlGames.Engine.Internal.Interfaces;
+namespace SdlGames.Engine.Interfaces;
 
 public interface IWindow
 {
-    public delegate void WindowEventHandler(EventType type);
+    internal delegate void WindowEventHandler(EventType type);
 
     void SetTitle(string title);
     string GetTitle();
@@ -22,9 +22,5 @@ public interface IWindow
     void SetFullscreen(bool enabled);
     bool GetFullscreen();
 
-    void PollEvents(WindowEventHandler handler);
-
-    void Clear(Color color);
-
-    void Present();
+    internal void PollEvents(WindowEventHandler handler);
 }

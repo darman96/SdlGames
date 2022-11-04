@@ -1,13 +1,13 @@
 using System.Drawing;
-using System.Numerics;
 using SdlGames.Engine.Graphics;
-using SdlGames.Engine.Math;
 
-namespace SdlGames.Engine.Internal.Interfaces;
+namespace SdlGames.Engine.Interfaces;
 
 public interface IRenderer
 {
+    void Clear(Color color);
+    void Present();
     internal Texture CreateTexture(IntPtr bufferHandle, int bufferSize);
     void DrawTexture(PointF position, Texture texture);
-    void DrawSprite(PointF position, Texture texture, RectangleF sourceRect);
+    void DrawSprite(PointF position, Sprite sprite);
 }

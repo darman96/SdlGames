@@ -25,10 +25,10 @@ public class TileWorldComponent
         {
             var tilePosition = new PointF(32 * (i % width), 32 * (i / width));
             
-            this.Tiles[i] = GameManager.Instance.CreateEntity(
-                new TileComponent(Tile.Dirt),
-                new TransformComponent(tilePosition, Vector2.One),
-                new SpriteComponent(sprites.GetSprite((int)Tile.Dirt)));
+            // this.Tiles[i] = GameManager.Instance.CreateEntity(
+            //     new TileComponent(Tile.Dirt),
+            //     new TransformComponent(tilePosition, Vector2.One),
+            //     new SpriteComponent(sprites.GetSprite((int)Tile.Dirt)));
         }
     }
 }

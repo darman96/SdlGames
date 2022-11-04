@@ -1,43 +1,47 @@
 using SdlGames.Engine.Event;
+using SdlGames.Engine.Interfaces;
+using EventHandler = SdlGames.Engine.Event.EventHandler;
 
 namespace SdlGames.Engine;
 
-public abstract class Game
+public abstract partial class Game
 {
-    private bool running = true;
-    private GameManager gameManager;
+    public event EventHandler OnEvent;
     
-    protected Game(string title, int width, int height)
-    {
-        GameManager.Initialize(title, width, height);
-        this.gameManager = GameManager.Instance;
-    }
+    protected IWindow Window { get; init; }
+    protected IRenderer Renderer { get; init; }
+
+    private bool isRunning;
 
     public void Run()
     {
+        this.isRunning = true;
+        this.OnEvent += this.HandleEvent;
+        
         this.Initialize();
-        var window = this.gameManager.Window;
-        while (this.running)
+        while (this.isRunning)
         {
-            window.PollEvents(type =>
+            this.Window.PollEvents(type =>
             {
                 switch (type)
                 {
                     case EventType.None:
                         break;
                     case EventType.Quit:
-                        this.running = false;
+                        this.isRunning = false;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(type), type, null);
                 }
+                
+                this.OnEvent.Invoke(type);
             });
-            window.Clear(Color.Black());
-            this.gameManager.Update();
-            
-            window.Present();
+            this.Renderer.Clear(Color.Black());
+            this.Renderer.Present();
         }
     }
 
     public abstract void Initialize();
+    
+    public virtual void HandleEvent(EventType eventType) { }
 }
