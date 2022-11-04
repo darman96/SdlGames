@@ -28,6 +28,6 @@ public class EntityStore
     public Entity? GetEntity(Guid id)
         => this.entities.FirstOrDefault(e => e.Id == id);
     
-    public ImmutableHashSet<Entity> GetEntities()
-        => this.entities.ToImmutableHashSet();
+    public ImmutableArray<Entity> GetEntities()
+        => this.entities.ToImmutableArray();
 }

@@ -1,3 +1,7 @@
+using System.Collections.Immutable;
+using SdlGames.Engine.ECS.Component;
+using SdlGames.Engine.ECS.Entity;
+using SdlGames.Engine.ECS.System;
 using SdlGames.Engine.Event;
 using SdlGames.Engine.Interfaces;
 using EventHandler = SdlGames.Engine.Event.EventHandler;
@@ -10,14 +14,30 @@ public abstract partial class Game
     
     protected IWindow Window { get; init; }
     protected IRenderer Renderer { get; init; }
+    protected ResourceManager ResourceManager => this.resourceManager;
 
     private bool isRunning;
+    private GameTimeManager gameTimeManager;
+    private ResourceManager resourceManager;
+    private EntityStore entityStore;
+    private ComponentStore componentStore;
+    private SystemManager systemManager;
+
+    public Entity CreateEntity(params object[] components)
+        => this.entityStore.CreateEntity(components);
+
+    public Entity? GetEntity(Guid id)
+        => this.entityStore.GetEntity(id);
+
+    public ImmutableArray<Entity> GetEntities()
+        => this.entityStore.GetEntities();
+
+    public void AddSystem(object system)
+        => this.systemManager.AddSystem(system);
 
     public void Run()
     {
-        this.isRunning = true;
-        this.OnEvent += this.HandleEvent;
-        
+        this.InitializeInt();
         this.Initialize();
         while (this.isRunning)
         {
@@ -37,6 +57,7 @@ public abstract partial class Game
                 this.OnEvent.Invoke(type);
             });
             this.Renderer.Clear(Color.Black());
+            this.systemManager.UpdateSystems();
             this.Renderer.Present();
         }
     }
@@ -44,4 +65,18 @@ public abstract partial class Game
     public abstract void Initialize();
     
     public virtual void HandleEvent(EventType eventType) { }
+
+    private void InitializeInt()
+    {
+        this.gameTimeManager = new GameTimeManager();
+        this.resourceManager = new ResourceManager(this.Renderer);
+        this.componentStore = new ComponentStore();
+        this.entityStore = new EntityStore(this.componentStore);
+        this.systemManager = new SystemManager(this.componentStore);
+        this.systemManager.AddSystem(new SpriteSystem(this.Renderer));
+        this.systemManager.AddSystem(new SpriteAnimationSystem(this.Renderer));
+        
+        this.OnEvent += this.HandleEvent;
+        this.isRunning = true;
+    }
 }

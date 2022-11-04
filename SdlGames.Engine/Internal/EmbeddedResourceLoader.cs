@@ -3,7 +3,7 @@ using Microsoft.Extensions.FileProviders;
 
 namespace SdlGames.Engine.Internal;
 
-public class EmbeddedResourceLoader
+internal class EmbeddedResourceLoader
 {
     private static EmbeddedResourceLoader? instance;
     
