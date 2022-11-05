@@ -4,16 +4,16 @@ namespace SdlGames.Engine.ECS.Component;
 
 public class SpriteAnimationComponent
 {
-    public Sprite[] Frames;
+    public SpriteAnimation Animation;
     public int CurrentFrame;
     public float CurrentFrameTime;
     public float FrameTime;
     public bool Loop;
     
-    public SpriteAnimationComponent(Sprite[] frames, int framesPerSecond, bool loop)
+    public SpriteAnimationComponent(SpriteAnimation animation, bool loop)
     {
-        this.Frames = frames;
-        this.FrameTime = 1f / framesPerSecond;
+        this.Animation = animation;
+        this.FrameTime = 1f / animation.FramesPerSecond;
         this.CurrentFrameTime = 0f;
         this.Loop = loop;
     }

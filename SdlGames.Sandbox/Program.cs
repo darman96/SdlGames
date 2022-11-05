@@ -11,6 +11,7 @@ public class TestGame : Game
 {
     private SpriteSheet sprites;
     private Entity player;
+    private TileWorld world;
 
     public TestGame(string title, int width, int height)
         : base(title, width, height) { }
@@ -19,10 +20,20 @@ public class TestGame : Game
     {
         this.sprites = new SpriteSheet(
             this.ResourceManager.LoadTexture("Assets/BoulderDashSprites.png"),
-            new Size(32, 23));
+            new Size(32, 32));
+
+        this.world = TileWorld.FromFile(
+            "Assets/Map_01.map",
+            new BoulderDashTileSet(this.sprites), 
+            this);
+        
         this.player = this.CreateEntity(
             new TransformComponent(new PointF(0, 0)),
-            new SpriteComponent(this.sprites.GetSprite(16)));
+            new SpriteComponent(this.sprites.GetSprite(0)));
+    }
+
+    public override void Update()
+    {
     }
 
     public override void HandleEvent(EventType eventType)

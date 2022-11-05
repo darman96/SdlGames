@@ -1,6 +1,6 @@
-using SdlGames.Sandbox.Systems;
+using SdlGames.Engine.Graphics;
 
-namespace SdlGames.Sandbox.Components;
+namespace SdlGames.Engine.ECS.Component;
 
 public class TileComponent
 {

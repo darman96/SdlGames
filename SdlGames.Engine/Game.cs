@@ -57,15 +57,23 @@ public abstract partial class Game
                 this.OnEvent.Invoke(type);
             });
             this.Renderer.Clear(Color.Black());
-            this.systemManager.UpdateSystems();
+            this.UpdateInt();
+            this.Update();
             this.Renderer.Present();
         }
     }
 
     public abstract void Initialize();
+    public abstract void Update();
     
     public virtual void HandleEvent(EventType eventType) { }
 
+    private void UpdateInt()
+    {
+        this.gameTimeManager.Update();
+        this.systemManager.UpdateSystems();
+    }
+    
     private void InitializeInt()
     {
         this.gameTimeManager = new GameTimeManager();
@@ -74,7 +82,7 @@ public abstract partial class Game
         this.entityStore = new EntityStore(this.componentStore);
         this.systemManager = new SystemManager(this.componentStore);
         this.systemManager.AddSystem(new SpriteSystem(this.Renderer));
-        this.systemManager.AddSystem(new SpriteAnimationSystem(this.Renderer));
+        this.systemManager.AddSystem(new SpriteAnimationSystem(this.Renderer, this.gameTimeManager));
         
         this.OnEvent += this.HandleEvent;
         this.isRunning = true;

@@ -33,4 +33,9 @@ public class SpriteSheet
 
         return sprites;
     }
+    
+    public SpriteAnimation GetSpriteAnimation(uint start, uint frameCount, int framesPerSecond)
+    {
+        return new SpriteAnimation(this.GetSprites(start, frameCount), framesPerSecond);
+    }
 }
