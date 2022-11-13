@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using SdlGames.Engine.ECS.Component;
 using SdlGames.Engine.ECS.Entity;
 using SdlGames.Engine.ECS.System;
+using SdlGames.Engine.ECS.Systems;
 using SdlGames.Engine.Event;
 using SdlGames.Engine.Interfaces;
 using EventHandler = SdlGames.Engine.Event.EventHandler;
@@ -38,7 +39,6 @@ public abstract partial class Game
     public void Run()
     {
         this.InitializeInt();
-        this.Initialize();
         while (this.isRunning)
         {
             this.Window.PollEvents(type =>
@@ -58,7 +58,6 @@ public abstract partial class Game
             });
             this.Renderer.Clear(Color.Black());
             this.UpdateInt();
-            this.Update();
             this.Renderer.Present();
         }
     }
@@ -72,6 +71,8 @@ public abstract partial class Game
     {
         this.gameTimeManager.Update();
         this.systemManager.UpdateSystems();
+        
+        this.Update();
     }
     
     private void InitializeInt()
@@ -86,5 +87,7 @@ public abstract partial class Game
         
         this.OnEvent += this.HandleEvent;
         this.isRunning = true;
+        
+        this.Initialize();
     }
 }

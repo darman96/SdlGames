@@ -1,6 +1,6 @@
 using SdlGames.Engine.Graphics;
 
-namespace SdlGames.Engine.ECS.Component;
+namespace SdlGames.Engine.ECS.Components;
 
 public class SpriteComponent
 {

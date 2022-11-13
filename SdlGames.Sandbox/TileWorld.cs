@@ -1,6 +1,6 @@
 using System.Drawing;
 using SdlGames.Engine;
-using SdlGames.Engine.ECS.Component;
+using SdlGames.Engine.ECS.Components;
 using SdlGames.Engine.ECS.Entity;
 using SdlGames.Engine.Graphics;
 

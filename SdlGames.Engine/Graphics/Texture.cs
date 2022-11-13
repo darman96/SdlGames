@@ -4,8 +4,8 @@ namespace SdlGames.Engine.Graphics;
 
 public class Texture
 {
-    public float Width => Size.X;
-    public float Height => Size.Y;
+    public float Width => this.Size.X;
+    public float Height => this.Size.Y;
     public Vector2 Size { get; private set; }
 
     internal IntPtr Handle => this.textureHandle;

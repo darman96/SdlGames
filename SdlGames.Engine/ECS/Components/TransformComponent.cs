@@ -1,7 +1,7 @@
 using System.Drawing;
 using System.Numerics;
 
-namespace SdlGames.Engine.ECS.Component;
+namespace SdlGames.Engine.ECS.Components;
 
 public class TransformComponent
 {

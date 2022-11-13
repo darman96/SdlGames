@@ -17,8 +17,8 @@ internal struct SystemInfo
 
         public RequiredComponent(RequiredComponentInfo info, object instance)
         {
-            Info = info;
-            Instance = instance;
+            this.Info = info;
+            this.Instance = instance;
         }
     }
 

@@ -43,10 +43,10 @@ public class SystemManager
 
     public void UpdateSystems()
     {
-        this.systems.ForEach(this.updateSystem);
+        this.systems.ForEach(this.UpdateSystem);
     }
 
-    private void updateSystem(object system)
+    private void UpdateSystem(object system)
     {
         var systemType = system.GetType();
         var systemInfo = this.systemInfos[systemType];
@@ -77,6 +77,6 @@ public class SystemManager
                         .ToArray());
             }
         }
-        catch (KeyNotFoundException _) { }
+        catch (KeyNotFoundException) { }
     }
 }
