@@ -17,25 +17,7 @@ public class SystemManager
     public void AddSystem(object system)
     {
         var systemType = system.GetType();
-        var updateMethod = systemType.GetMethod("Update");
-
-        if (updateMethod is null)
-            throw new Exception("System has now Update method");
-
-        var requiredComponents = updateMethod
-            .GetParameters()
-            .Select((param, index) => new SystemInfo.RequiredComponentInfo
-            {
-                ParameterIndex = index,
-                Type = param.ParameterType
-            })
-            .ToArray();
-
-        var systemInfo = new SystemInfo
-        {
-            RequiredComponents = requiredComponents,
-            UpdateMethod = updateMethod
-        };
+        var systemInfo = new SystemInfo(systemType);
 
         this.systems.Add(system);
         this.systemInfos[systemType] = systemInfo;
@@ -50,7 +32,8 @@ public class SystemManager
     {
         var systemType = system.GetType();
         var systemInfo = this.systemInfos[systemType];
-        var componentTypes = systemInfo.RequiredComponents
+        var componentTypes = systemInfo
+            .ComponentInfos
             .Select(x => x.Type)
             .ToArray();
 
@@ -61,20 +44,20 @@ public class SystemManager
 
             foreach (var componentGroup in componentGroups)
             {
-                var requiredComponents = componentGroup.Components
+                var componentInstances = componentGroup
+                    .Components
                     .Join(
-                        systemInfo.RequiredComponents,
+                        systemInfo.ComponentInfos,
                         component => component.GetType(),
                         info => info.Type,
-                        (component, info) 
-                            => new SystemInfo.RequiredComponent(info, component))
-                    .OrderBy(x => x.Info.ParameterIndex);
+                        (component, info) => (Info : info, Instance : component))
+                    .OrderBy(x => x.Info.ParameterIndex)
+                    .Select(x => x.Instance)
+                    .ToArray();
 
                 systemInfo.UpdateMethod.Invoke(
                     system,
-                    requiredComponents
-                        .Select(r => r.Instance)
-                        .ToArray());
+                    componentInstances);
             }
         }
         catch (KeyNotFoundException) { }

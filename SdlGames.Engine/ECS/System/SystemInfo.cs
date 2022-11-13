@@ -2,26 +2,21 @@ using System.Reflection;
 
 namespace SdlGames.Engine.ECS.System;
 
-internal struct SystemInfo
+internal class SystemInfo
 {
-    public struct RequiredComponentInfo
+    public readonly SystemComponentInfo[] ComponentInfos;
+    public readonly MethodInfo UpdateMethod;
+
+    public SystemInfo(Type systemType)
     {
-        public int ParameterIndex;
-        public Type Type;
+        var updateMethod = systemType
+            .GetMethod("Update");
+
+        this.UpdateMethod = updateMethod 
+            ?? throw new ArgumentException($"System {systemType.Name} does not have an Update method");
+        this.ComponentInfos = updateMethod.GetParameters()
+            .Select((param, idx) 
+                => new SystemComponentInfo(param, idx))
+            .ToArray();
     }
-
-    public struct RequiredComponent
-    {
-        public RequiredComponentInfo Info;
-        public object Instance;
-
-        public RequiredComponent(RequiredComponentInfo info, object instance)
-        {
-            this.Info = info;
-            this.Instance = instance;
-        }
-    }
-
-    public RequiredComponentInfo[] RequiredComponents;
-    public MethodInfo UpdateMethod;
 }
